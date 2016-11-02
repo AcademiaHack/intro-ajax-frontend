@@ -40,7 +40,7 @@
           </div>
           <div class="row">
             <div class="col-xs-6">
-              <form id="newUser" action="#" ccept-charset="UTF-8" method="post">
+              <form id="newUser" action="#" accept-charset="UTF-8" method="post">
                 <div class="form-group">
                   <label for="nameUser">Name</label>
                   <input type="text" name="user[name]" id="user-name" class="form-control">
@@ -91,6 +91,11 @@
         });
       }
 
+      function cleanTable(){
+        var tbody = $("#usersTable > tbody")
+        tbody.empty();
+      }
+
       function loadTable(){
         $.ajax({
           url: "http://localhost:3000/users",
@@ -102,8 +107,32 @@
         })
       }
 
+      function sendForm(form, formData){
+        $.ajax({
+          url: "http://localhost:3000/users",
+          method: "post",
+          dataType: "json",
+          data: formData,
+          success: function(user){
+            form.trigger("reset");
+            cleanTable();
+            loadTable();
+          }
+        })
+      }
+
+      function handleForm(){
+        $("#newUser").submit(function(event){
+          event.preventDefault();
+          var formData = $(this).serializeArray();
+          console.log(formData)
+          sendForm($(this), formData);
+        });
+      }
+
       $(document).ready(function(){
         loadTable();
+        handleForm();
       });
     </script>
   </body>
